@@ -1,6 +1,0 @@
-/* Use the tailwind.dashboard.config.js file for this CSS file */
-@config "./tailwind.config.ts";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
