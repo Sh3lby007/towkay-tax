@@ -1,6 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* 
+Write custom variable or global styles you want to apply to 
+tailwind css, then after declaring your specific styles, 
+go to tailwind.config.js file and extend them for example，
+colors： {
+  primary: "var(--primary)"
+}
+then when i use it in the class, it would be class="text-primary"
+*/
+:root {
+    /* --primary: white; */
+}
+
 /* @import './base.css';
 
 #app {
