@@ -215,8 +215,27 @@
             </div>
         </div>
     </div>
+    <h1
+        ref="typingText"
+        class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing border-r-4"
+    >
+        Hello, world.
+    </h1>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+
+const typingText = ref<HTMLInputElement | null>(null)
+
+// onMounted(() => {
+//     typingText.value?.focus()
+// })
+onMounted(() => {
+    typingText.value?.addEventListener('animationend', () => {
+        typingText.value?.classList.remove('border-r-4', 'border-r-black')
+    })
+})
+</script>
 
 <style scoped></style>
