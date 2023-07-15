@@ -14,11 +14,12 @@
             <input v-model="income" type="number" class="border p-2 w-full rounded" />
         </div>
 
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-2"> Tax Rate </label>
-
-            <input v-model="taxRate" type="number" class="border p-2 w-full rounded" />
-        </div>
+        <!-- <div class="mb-4">
+            <label class="block text-gray-700 font-medium mb-2"> Tax Rate: </label>
+            <div v-if="isTaxRateCalculated">{{ tax.toFixed(2) }}%</div>
+            
+            <input v-model="tax" type="number" class="border p-2 w-full rounded" />
+        </div> -->
 
         <button class="bg-blue-500 text-white py-2 px-4 rounded" @click="calculateTax">
             Calculate Tax
@@ -55,8 +56,9 @@ const taxBrackets = [
 
 const typingText = ref<HTMLInputElement | null>(null)
 const isCalculated = ref(false)
+const isTaxRateCalculated = ref(false)
 const income = ref(0)
-const taxRate = ref(0)
+const tax = ref(0)
 
 const taxAmount = computed(() => {
     let taxPayable = 0
@@ -76,9 +78,12 @@ const taxAmount = computed(() => {
             break
         }
     }
-
     return taxPayable
 })
+
+const emit = defineEmits<{
+    (e: 'tax-calculated', income: number, tax: number): void
+}>()
 
 watch(income, () => {
     isCalculated.value = false
@@ -87,6 +92,12 @@ watch(income, () => {
 function calculateTax() {
     taxAmount.value
     isCalculated.value = true
+
+    tax.value = (taxAmount.value / income.value) * 100
+
+    isTaxRateCalculated.value = true
+    emit('tax-calculated', income.value, tax.value)
+    console.log(emit('tax-calculated', income.value, tax.value))
 }
 
 onMounted(() => {
