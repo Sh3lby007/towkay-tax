@@ -2,11 +2,10 @@
     <div class="max-m-wd mx-auto p-4 mt-6 rounded-lg shadow-md border-lime-950">
         <h1
             ref="typingText"
-            class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing border-r-4"
+            class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing"
         >
-            Hello, world.
+            Welcome towkay, time to do your taxes
         </h1>
-        <h2 class="text-lg font-medium mb-2">Income Tax Calculator</h2>
 
         <div class="mb-4">
             <label class="block text-gray-700 font-medium mb-2"> Annual Income </label>
@@ -28,15 +27,13 @@
         <div v-if="isCalculated" class="mt-4">
             <div class="text-lg font-medium mb-2">Tax Amount</div>
 
-            <div class="text-xl font-bold">
-                {{ taxAmount.toFixed(2) }}
-            </div>
+            <div class="text-xl font-bold">${{ taxAmount.toFixed(2) }}</div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const taxBrackets = [
     { upTo: 20000, rate: 0 },
@@ -99,12 +96,6 @@ function calculateTax() {
     emit('tax-calculated', income.value, tax.value)
     console.log(emit('tax-calculated', income.value, tax.value))
 }
-
-onMounted(() => {
-    typingText.value?.addEventListener('animationend', () => {
-        typingText.value?.classList.remove('border-r-4', 'border-r-black')
-    })
-})
 </script>
 
 <style scoped></style>

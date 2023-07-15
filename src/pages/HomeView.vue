@@ -5,20 +5,20 @@ import TaxTable from './components/TaxTable.vue'
 
 // state
 const income = ref(0)
-const tax = ref(0)
 const isCalculated = ref(false)
 
 // methods
-function onCalculate(income: number, tax: number) {
-    income.value = income
-    tax.value = tax
+function onCalculate(newIncome: number, newTax: number) {
     isCalculated.value = true
+    income.value = newIncome
 }
 </script>
 
 <template>
     <main>
         <Income @tax-calculated="onCalculate" />
-        <TaxTable v-if="isCalculated" :income="income" :tax="tax" />
+        <br />
+        <br />
+        <TaxTable v-if="isCalculated" :income="income" />
     </main>
 </template>
