@@ -157,8 +157,6 @@ const activeBracket = computed(() => {
 })
 
 function isActiveBracket(bracket: Bracket | undefined) {
-    console.log(activeBracket)
-
     return activeBracket.value && bracket === activeBracket.value
 }
 </script>
