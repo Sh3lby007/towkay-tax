@@ -1,1 +1,1 @@
-if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/Towkay-Tax/sw.js', { scope: '/Towkay-Tax/' })})}
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/towkay-tax/sw.js', { scope: '/towkay-tax/' })})}
