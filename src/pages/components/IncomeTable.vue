@@ -8,11 +8,12 @@
             <label class="block text-gray-700 font-medium mb-2"> Annual Income </label>
 
             <input
+                type="text"
                 ref="inputRef"
                 v-model="income"
-                type="number"
                 class="border p-2 w-full rounded"
                 @focus="clearInput"
+                @keypress="isNumber"
             />
         </div>
 
@@ -68,7 +69,7 @@ onMounted(() => {
 })
 
 // On focus on the input element, remove any numbers in input
-function clearInput(event) {
+function clearInput(event: { target: { value: string } }) {
     event.target.value = ''
 }
 
@@ -104,7 +105,7 @@ const taxAmount = computed(() => {
 })
 
 const emit = defineEmits<{
-    (e: 'tax-calculated', income: number): void
+    (e: 'tax-calculated', taxableIncome: number): void
 }>()
 
 watch(income, () => {
@@ -118,7 +119,24 @@ function calculateTax() {
     tax.value = (taxAmount.value / income.value) * 100
 
     isTaxRateCalculated.value = true
-    emit('tax-calculated', income.value)
+    emit('tax-calculated', taxableIncome.value)
+}
+
+// only allow for numeric and 1 decimal dot in the input
+function isNumber(evt: KeyboardEvent): void {
+    const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
+
+    const keyPressed = evt.key
+
+    // Allow only one period
+    if (keyPressed === '.' && evt.target.value.includes('.')) {
+        evt.preventDefault()
+        return
+    }
+
+    if (!keysAllowed.includes(keyPressed)) {
+        evt.preventDefault()
+    }
 }
 </script>
 

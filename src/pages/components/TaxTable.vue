@@ -1,14 +1,14 @@
 <template>
     <table class="table-auto border-collapse w-full text-sm text-center">
-        <thead class="">
-            <tr>
+        <thead class="text-xl">
+            <tr class="">
                 <th class="border p-2">Chargeable Income</th>
                 <th class="border p-2">Tax Rate(%)</th>
                 <th class="border p-2">Tax Payable(S$)</th>
             </tr>
         </thead>
 
-        <tbody>
+        <tbody class="text-lg">
             <tr
                 :class="{ highlight: isActiveBracket(bracket) }"
                 class="transition duration-300 ease-in border-black"
@@ -32,7 +32,6 @@
             </tr>
         </tbody>
     </table>
-    <!-- </transition> -->
 </template>
 
 <script setup lang="ts">
@@ -165,4 +164,13 @@ function isActiveBracket(bracket: Bracket | undefined) {
 .highlight {
     background: blue;
 }
+
+/* tbody {
+    background: linear-gradient(to bottom, purple, blue);
+} */
+/* tr:hover {
+    background: linear-gradient(to right, #ff0000, #ff8900, #ffd300, #a0ff41, #00ffcc);
+    animation: animatedStripes 2s linear infinite;
+    box-shadow: 0 0 20px #8a2be2;
+} */
 </style>
