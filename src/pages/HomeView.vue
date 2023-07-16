@@ -8,7 +8,7 @@ const income = ref(0)
 const isCalculated = ref(false)
 
 // methods
-function onCalculate(newIncome: number, newTax: number) {
+function onCalculate(newIncome: number) {
     isCalculated.value = true
     income.value = newIncome
 }

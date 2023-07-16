@@ -1,9 +1,6 @@
 <template>
     <div class="max-m-wd mx-auto p-4 mt-6 rounded-lg shadow-md border-lime-950">
-        <h1
-            ref="typingText"
-            class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing"
-        >
+        <h1 class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing">
             Welcome towkay, time to do your taxes
         </h1>
 
@@ -12,13 +9,6 @@
 
             <input v-model="income" type="number" class="border p-2 w-full rounded" />
         </div>
-
-        <!-- <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-2"> Tax Rate: </label>
-            <div v-if="isTaxRateCalculated">{{ tax.toFixed(2) }}%</div>
-            
-            <input v-model="tax" type="number" class="border p-2 w-full rounded" />
-        </div> -->
 
         <button class="bg-blue-500 text-white py-2 px-4 rounded" @click="calculateTax">
             Calculate Tax
@@ -50,8 +40,6 @@ const taxBrackets = [
     { upTo: 1000000, rate: 0.23 },
     { upTo: Infinity, rate: 0.24 }
 ]
-
-const typingText = ref<HTMLInputElement | null>(null)
 const isCalculated = ref(false)
 const isTaxRateCalculated = ref(false)
 const income = ref(0)
