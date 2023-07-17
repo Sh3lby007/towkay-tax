@@ -19,6 +19,6 @@ function onCalculate(newIncome: number) {
         <Income @tax-calculated="onCalculate" />
         <br />
         <br />
-        <TaxTable v-if="isCalculated" :income="income" />
+        <TaxTable v-if="isCalculated" :taxable-income="income" />
     </main>
 </template>

@@ -146,23 +146,39 @@ const brackets: Bracket[] = [
 
 // props
 const props = defineProps<{
-    income: number
+    taxableIncome: number
 }>()
+
 // computed
 const activeBracket = computed(() => {
     return brackets.find(b => {
-        return props.income <= parseInt(b.income2)
+        const income1Num = parseIncome(b.income1)
+        // console.log('Bracket income1:', income1Num)
+        return props.taxableIncome <= income1Num
     })
 })
 
-function isActiveBracket(bracket: Bracket | undefined) {
-    return activeBracket.value && bracket === activeBracket.value
+function isActiveBracket(bracket: Bracket) {
+    console.log(activeBracket.value)
+    // console.log(bracket)
+
+    return activeBracket.value?.income1 === bracket.income1
+}
+
+function parseIncome(str: string) {
+    // Remove all non-digit characters
+    let cleaned = str.replace(/\D/g, '')
+
+    // Convert to number
+    let income = Number(cleaned)
+
+    return income
 }
 </script>
 
 <style scoped>
 .highlight {
-    background: blue;
+    background: lightblue;
 }
 
 /* tbody {
