@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted, toRef } from 'vue'
 
 interface Bracket {
     income2: string
@@ -148,20 +148,41 @@ const brackets: Bracket[] = [
 const props = defineProps<{
     taxableIncome: number
 }>()
+const taxableIncome = toRef(props, 'taxableIncome')
+const activeBracket = ref()
 
-// computed
-const activeBracket = computed(() => {
-    return brackets.find(b => {
-        const income1Num = parseIncome(b.income1)
-        // console.log('Bracket income1:', income1Num)
-        return props.taxableIncome <= income1Num
-    })
+watch(taxableIncome, () => {
+    updateActiveBracket()
 })
 
-function isActiveBracket(bracket: Bracket) {
-    console.log(activeBracket.value)
-    // console.log(bracket)
+onMounted(updateActiveBracket)
 
+function updateActiveBracket() {
+    activeBracket.value = null
+
+    const minIncome = parseIncome(brackets[0].income1)
+    const maxIncome = parseIncome(brackets[brackets.length - 1].income2)
+    // Check if below lowest bracket
+    if (taxableIncome.value < minIncome) {
+        activeBracket.value = brackets[0]
+    } else if (taxableIncome.value > maxIncome) {
+        // Check if exceeds highest bracket
+        activeBracket.value = brackets[brackets.length - 1]
+    } else {
+        for (const bracket of brackets) {
+            const income1 = parseIncome(bracket.income1)
+            const income2 = parseIncome(bracket.income2)
+
+            if (taxableIncome.value >= income1 && taxableIncome.value < income1 + income2) {
+                activeBracket.value = bracket
+                break
+            }
+        }
+    }
+}
+
+function isActiveBracket(bracket: Bracket) {
+    // console.log(activeBracket.value)
     return activeBracket.value?.income1 === bracket.income1
 }
 
