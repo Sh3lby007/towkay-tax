@@ -1,20 +1,26 @@
 <template>
     <div class="max-m-wd mx-auto p-4 mt-6 rounded-lg shadow-md border-lime-950">
-        <h1 class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing">
+        <h1
+            class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing mb-4"
+        >
             Welcome towkay, time to do your taxes
         </h1>
 
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium mb-2"> Annual Income </label>
+        <div class="mb-4 flex">
+            <!-- <label class="block text-gray-700 font-medium mb-2"> Annual Income </label> -->
 
             <input
                 type="text"
                 ref="inputRef"
                 v-model="income"
-                class="border p-2 w-full rounded"
+                class="border p-2 w-1/2 rounded"
                 @focus="clearInput"
                 @keypress="isNumber"
             />
+            <select v-model="incomePeriod" class="w-1/2">
+                <option value="annual">Annual</option>
+                <option value="monthly">Monthly</option>
+            </select>
         </div>
 
         <button class="bg-blue-500 text-white py-2 px-4 rounded" @click="calculateTax">
@@ -27,7 +33,7 @@
                 <h1 class="text-xl font-bold">${{ taxableIncome.toFixed(2) }}</h1>
             </div>
             <div class="flex">
-                <h1 class="text-lg font-medium mb-2 mr-3">CPF Deduction (80%) :</h1>
+                <h1 class="text-lg font-medium mb-2 mr-3">CPF Deduction (20%) :</h1>
                 <h1 class="text-xl font-bold">${{ cpfDeduction.toFixed(2) }}</h1>
             </div>
             <div class="flex">
@@ -57,9 +63,9 @@ const taxBrackets = [
     { upTo: Infinity, rate: 0.24 }
 ]
 const isCalculated = ref(false)
-const isTaxRateCalculated = ref(false)
 const income = ref(0)
-const tax = ref(0)
+const incomePeriod = ref('annual')
+
 // Creates a reactive reference to the input element, with a type of HTMLInputElement
 const inputRef = ref<HTMLInputElement | null>(null)
 
@@ -73,12 +79,24 @@ function clearInput(event: { target: { value: string } }) {
     event.target.value = ''
 }
 
+const actualIncome = computed(() => {
+    if (incomePeriod.value === 'annual') {
+        return income.value
+    } else {
+        return income.value * 12
+    }
+})
+
 const cpfDeduction = computed(() => {
     return income.value * 0.2
 })
 
 const taxableIncome = computed(() => {
-    return income.value * 0.8
+    if (incomePeriod.value === 'Annual') {
+        return income.value * 0.8
+    } else {
+        return actualIncome.value * 0.8
+    }
 })
 
 const taxAmount = computed(() => {
@@ -92,9 +110,7 @@ const taxAmount = computed(() => {
             taxableIncome - prevBracketUpper,
             bracket.upTo - prevBracketUpper
         )
-
         taxPayable += taxableInBracket * bracket.rate
-
         prevBracketUpper = bracket.upTo
 
         if (taxableIncome <= bracket.upTo) {
@@ -113,12 +129,14 @@ watch(income, () => {
 })
 
 function calculateTax() {
+    if (incomePeriod.value === 'monthly') {
+        actualIncome.value
+        isCalculated.value = true
+        return
+    }
     taxAmount.value
     isCalculated.value = true
 
-    tax.value = (taxAmount.value / income.value) * 100
-
-    isTaxRateCalculated.value = true
     emit('tax-calculated', taxableIncome.value)
 }
 
