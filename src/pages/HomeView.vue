@@ -16,9 +16,13 @@ function onCalculate(newIncome: number) {
 
 <template>
     <main>
-        <Income @tax-calculated="onCalculate" />
-        <br />
-        <br />
+        <Income @tax-calculated="onCalculate" class="mb-8" />
+        <h1
+            v-if="isCalculated"
+            class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing mb-5"
+        >
+            Your Tax Bracket
+        </h1>
         <TaxTable v-if="isCalculated" :taxable-income="income" />
     </main>
 </template>
