@@ -1,23 +1,30 @@
 <template>
     <div class="max-m-wd mx-auto p-4 mt-6 rounded-lg shadow-md border-lime-950">
         <h1
-            class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing mb-4"
+            class="overflow-hidden whitespace-nowrap font-mono text-xl font-bold animate-typing mb-5"
         >
             Welcome towkay, time to do your taxes
         </h1>
 
-        <div class="mb-4 flex">
-            <!-- <label class="block text-gray-700 font-medium mb-2"> Annual Income </label> -->
+        <div class="flex">
+            <label class="block text-gray-700 font-medium mb-2 w-1/2"> Your Income </label>
+            <label class="block text-gray-700 font-medium mb-2"> Select an option </label>
+        </div>
 
+        <div class="mb-6 flex">
             <input
                 type="text"
                 ref="inputRef"
                 v-model="income"
-                class="border p-2 w-1/2 rounded"
+                class="border p-2.5 w-1/2 rounded-lg mr-2"
                 @focus="clearInput"
                 @keypress="isNumber"
             />
-            <select v-model="incomePeriod" class="w-1/2">
+            <select
+                v-model="incomePeriod"
+                class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-1/2 p-2.5 ml-2"
+            >
+                <!-- <select v-model="incomePeriod" class="w-1/2 border border-gray-300"> -->
                 <option value="annual">Annual</option>
                 <option value="monthly">Monthly</option>
             </select>
@@ -47,6 +54,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 
+// Creates a reactive reference to the input element, with a type of HTMLInputElement
+const inputRef = ref<HTMLInputElement | null>(null)
+
+// Create a taxBracket array for purpose of calculating tax according to SG tax laws.
 const taxBrackets = [
     { upTo: 20000, rate: 0 },
     { upTo: 30000, rate: 0.02 },
@@ -62,12 +73,12 @@ const taxBrackets = [
     { upTo: 1000000, rate: 0.23 },
     { upTo: Infinity, rate: 0.24 }
 ]
+
+// Controls whether the tax table component appears when the calculate Tax button is clicked.
 const isCalculated = ref(false)
+
 const income = ref(0)
 const incomePeriod = ref('annual')
-
-// Creates a reactive reference to the input element, with a type of HTMLInputElement
-const inputRef = ref<HTMLInputElement | null>(null)
 
 // When this page is loaded, we will focus on the input element.
 onMounted(() => {
