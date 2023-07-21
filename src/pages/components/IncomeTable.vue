@@ -21,10 +21,10 @@
                 @keypress="isNumber"
             />
             <select
+                @change="clearInput"
                 v-model="incomePeriod"
                 class="bg-gray-50 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-1/2 p-2.5 ml-2"
             >
-                <!-- <select v-model="incomePeriod" class="w-1/2 border border-gray-300"> -->
                 <option value="annual">Annual</option>
                 <option value="monthly">Monthly</option>
             </select>
@@ -86,45 +86,32 @@ onMounted(() => {
 })
 
 // On focus on the input element, remove any numbers in input
-function clearInput(event: { target: { value: string } }) {
-    event.target.value = ''
+function clearInput() {
+    // TODO: SOLVE ERROR Type 'string' is not assignable to type 'number'
+    income.value = ''
 }
-
-const actualIncome = computed(() => {
-    if (incomePeriod.value === 'annual') {
-        return income.value
-    } else {
-        return income.value * 12
-    }
-})
 
 const cpfDeduction = computed(() => {
     return income.value * 0.2
 })
 
 const taxableIncome = computed(() => {
-    if (incomePeriod.value === 'Annual') {
-        return income.value * 0.8
-    } else {
-        return actualIncome.value * 0.8
-    }
+    return incomePeriod.value === 'annual' ? income.value * 0.8 : income.value * 9.6
 })
 
 const taxAmount = computed(() => {
     let taxPayable = 0
     let prevBracketUpper = 0
-    // Get taxable income, variable belongs to this computed property
-    const taxableIncome = income.value * 0.8
 
     for (const bracket of taxBrackets) {
         const taxableInBracket = Math.min(
-            taxableIncome - prevBracketUpper,
+            taxableIncome.value - prevBracketUpper,
             bracket.upTo - prevBracketUpper
         )
         taxPayable += taxableInBracket * bracket.rate
         prevBracketUpper = bracket.upTo
 
-        if (taxableIncome <= bracket.upTo) {
+        if (taxableIncome.value <= bracket.upTo) {
             break
         }
     }
@@ -140,14 +127,7 @@ watch(income, () => {
 })
 
 function calculateTax() {
-    if (incomePeriod.value === 'monthly') {
-        actualIncome.value
-        isCalculated.value = true
-        return
-    }
-    taxAmount.value
     isCalculated.value = true
-
     emit('tax-calculated', taxableIncome.value)
 }
 
