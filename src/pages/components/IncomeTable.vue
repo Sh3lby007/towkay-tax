@@ -7,8 +7,10 @@
         </h1>
 
         <div class="flex">
-            <label class="block text-gray-700 font-medium mb-2 w-1/2"> Your Income </label>
-            <label class="block text-gray-700 font-medium mb-2"> Select an option </label>
+            <label class="block text-gray-700 font-medium mb-2 w-1/2">
+                Your Gross Income (Before CPF Deductions)</label
+            >
+            <label class="block text-gray-700 font-medium mb-2 ml-2"> Select an option </label>
         </div>
 
         <div class="mb-6 flex">
