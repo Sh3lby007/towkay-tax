@@ -20,7 +20,7 @@
                 v-model="income"
                 class="border p-2.5 w-1/2 rounded-lg mr-2"
                 @focus="clearInput"
-                @keypress="isNumber"
+                @input="isNumber"
             />
             <select
                 @change="clearInput"
@@ -133,18 +133,56 @@ function calculateTax() {
     emit('tax-calculated', taxableIncome.value)
 }
 
-// only allow for numeric and 1 decimal dot in the input
-function isNumber(evt: KeyboardEvent): void {
+/**
+ * Input validation handler to allow only numbers
+ * and one decimal point
+ *
+ * @param evt - Input event object
+ */
+function isNumber(evt: Event) {
+    /**
+     * Previous evt param type was KeyboardEvent which
+     * resulted in mobile devices still possible to input
+     * text and other symbols because this type does not
+     * exist on mobile browsers. The function is also
+     * executed @keypress which was only availble in desktop
+     * browsers and only executed once in mobile browsers
+     * Lesson learnt for input elements are to
+     * 1. Use @input events for cross-platform support
+     * 2. Accept generic Event type instead of KeyboardEvent
+     * 3.
+     */
+    /**
+     * Get the input element from the event target
+     * Have to assert event target as HTMLInputElement
+     * to access value
+     */
+    const input = evt.target as HTMLInputElement
+
+    // Allowed keys array
     const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
 
-    const keyPressed = evt.key
+    /**
+     * Get current input value
+     * Extract last key pressed by taking last character
+     * Handles issue like autocorrect before validate on
+     * mobile browsers
+     */
+    const value = input.value
+    const keyPressed = value[value.length - 1]
 
-    // Allow only one period
-    if (keyPressed === '.' && evt.target.value.includes('.')) {
+    /**
+     * Only allow one decimal point
+     * Check if key pressed is . AND value already includes it
+     */
+    if (keyPressed === '.' && value.includes('.')) {
         evt.preventDefault()
         return
     }
 
+    /**
+     * Prevent any other keys that are not allowed
+     */
     if (!keysAllowed.includes(keyPressed)) {
         evt.preventDefault()
     }
