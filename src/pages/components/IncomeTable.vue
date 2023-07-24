@@ -20,7 +20,8 @@
                 v-model="income"
                 class="border p-2.5 w-1/2 rounded-lg mr-2"
                 @focus="clearInput"
-                @input="isNumber"
+                @input="validateInput"
+                @keyup.enter="calculateTax"
             />
             <select
                 @change="clearInput"
@@ -79,7 +80,7 @@ const taxBrackets = [
 // Controls whether the tax table component appears when the calculate Tax button is clicked.
 const isCalculated = ref(false)
 
-const income = ref(0)
+const income = ref('')
 const incomePeriod = ref('annual')
 
 // When this page is loaded, we will focus on the input element.
@@ -89,16 +90,26 @@ onMounted(() => {
 
 // On focus on the input element, remove any numbers in input
 function clearInput() {
-    // TODO: SOLVE ERROR Type 'string' is not assignable to type 'number'
     income.value = ''
 }
-
-const cpfDeduction = computed(() => {
-    return income.value * 0.2
+// Computed property to convert the income value to a number without formatting
+const formattedIncome = computed(() => {
+    // Convert income string to a number
+    return parseFloat(income.value)
 })
 
+// Calculates how much is CPF contributed.
+const cpfDeduction = computed(() => {
+    return incomePeriod.value === 'annual'
+        ? formattedIncome.value * 0.2 // If annual option chosen, multiply by 0.2
+        : formattedIncome.value * 2.4 // If monthly option chosen, 12 * 0.2 = 2.4
+})
+
+// Calculates how much income is after CPF which is to be taxed.
 const taxableIncome = computed(() => {
-    return incomePeriod.value === 'annual' ? income.value * 0.8 : income.value * 9.6
+    return incomePeriod.value === 'annual'
+        ? formattedIncome.value * 0.8
+        : formattedIncome.value * 9.6
 })
 
 const taxAmount = computed(() => {
@@ -124,6 +135,11 @@ const emit = defineEmits<{
     (e: 'tax-calculated', taxableIncome: number): void
 }>()
 
+/**
+ * Ensures calculated taxableIncome, CPF deduction and tax amount does not show
+ * itself changing value when there is a new input because all those values are
+ * reactive and hence looks ugly if its changed when there is a new input.
+ */
 watch(income, () => {
     isCalculated.value = false
 })
@@ -133,59 +149,30 @@ function calculateTax() {
     emit('tax-calculated', taxableIncome.value)
 }
 
+let lastValidValue = ''
 /**
  * Input validation handler to allow only numbers
  * and one decimal point
- *
- * @param evt - Input event object
- */
-function isNumber(evt: Event) {
-    /**
-     * Previous evt param type was KeyboardEvent which
-     * resulted in mobile devices still possible to input
-     * text and other symbols because this type does not
-     * exist on mobile browsers. The function is also
-     * executed @keypress which was only availble in desktop
-     * browsers and only executed once in mobile browsers
-     * Lesson learnt for input elements are to
-     * 1. Use @input events for cross-platform support
-     * 2. Accept generic Event type instead of KeyboardEvent
-     * 3.
-     */
-    /**
-     * Get the input element from the event target
-     * Have to assert event target as HTMLInputElement
-     * to access value
-     */
-    const input = evt.target as HTMLInputElement
-
-    // Allowed keys array
+ *  */
+function validateInput() {
     const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
 
-    /**
-     * Get current input value
-     * Extract last key pressed by taking last character
-     * Handles issue like autocorrect before validate on
-     * mobile browsers
-     */
-    const value = input.value
-    const keyPressed = value[value.length - 1]
-
-    /**
-     * Only allow one decimal point
-     * Check if key pressed is . AND value already includes it
-     */
-    if (keyPressed === '.' && value.includes('.')) {
-        evt.preventDefault()
-        return
+    let newValue = ''
+    for (const char of income.value) {
+        if (keysAllowed.includes(char)) {
+            newValue += char
+        }
     }
 
-    /**
-     * Prevent any other keys that are not allowed
-     */
-    if (!keysAllowed.includes(keyPressed)) {
-        evt.preventDefault()
+    // Ignore the latest dot input if there is already a dot present
+    const dotIndex = newValue.indexOf('.')
+    if (dotIndex !== -1 && newValue.indexOf('.', dotIndex + 1) !== -1) {
+        newValue = lastValidValue // Restore to the last valid value without the additional dot
+    } else {
+        lastValidValue = newValue // Update the last valid value
     }
+    // Update the input value with the validated and manipulated value
+    income.value = newValue
 }
 </script>
 
