@@ -15,7 +15,7 @@
 
         <div class="mb-6 flex">
             <input
-                type="text"
+                type="tel"
                 ref="inputRef"
                 v-model="income"
                 class="border p-2.5 w-1/2 rounded-lg mr-2"
