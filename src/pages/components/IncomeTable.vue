@@ -21,6 +21,7 @@
                 class="border p-2.5 w-1/2 rounded-lg mr-2"
                 @focus="clearInput"
                 @input="validateInput"
+                @change="validateInput"
                 @keyup.enter="calculateTax"
             />
             <select
@@ -82,6 +83,9 @@ const isCalculated = ref(false)
 
 const income = ref('')
 const incomePeriod = ref('annual')
+const isMobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+)
 
 // When this page is loaded, we will focus on the input element.
 onMounted(() => {
@@ -155,6 +159,8 @@ let lastValidValue = ''
  * and one decimal point
  *  */
 function validateInput() {
+    // console.log(isMobileBrowser)
+
     const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
 
     let newValue = ''
