@@ -21,7 +21,6 @@
                 class="border p-2.5 w-1/2 rounded-lg mr-2"
                 @focus="clearInput"
                 @input="validateInput"
-                @change="validateInput"
                 @keyup.enter="calculateTax"
             />
             <select
@@ -83,9 +82,6 @@ const isCalculated = ref(false)
 
 const income = ref('')
 const incomePeriod = ref('annual')
-const isMobileBrowser = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-)
 
 // When this page is loaded, we will focus on the input element.
 onMounted(() => {
@@ -153,32 +149,24 @@ function calculateTax() {
     emit('tax-calculated', taxableIncome.value)
 }
 
-let lastValidValue = ''
 /**
  * Input validation handler to allow only numbers
  * and one decimal point
  *  */
 function validateInput() {
-    // console.log(isMobileBrowser)
+    // Regular expression to match valid characters (numbers and one dot)
+    const regex = /^[0-9]*\.?[0-9]*$/
 
-    const keysAllowed = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
+    if (!regex.test(income.value)) {
+        // If the input does not match the valid pattern, remove invalid characters
+        income.value = income.value.replace(/[^0-9.]/g, '')
 
-    let newValue = ''
-    for (const char of income.value) {
-        if (keysAllowed.includes(char)) {
-            newValue += char
+        // Ignore the latest dot input if there is already a dot present
+        const dotIndex = income.value.indexOf('.')
+        if (dotIndex !== -1 && income.value.indexOf('.', dotIndex + 1) !== -1) {
+            income.value = income.value.substring(0, income.value.lastIndexOf('.'))
         }
     }
-
-    // Ignore the latest dot input if there is already a dot present
-    const dotIndex = newValue.indexOf('.')
-    if (dotIndex !== -1 && newValue.indexOf('.', dotIndex + 1) !== -1) {
-        newValue = lastValidValue // Restore to the last valid value without the additional dot
-    } else {
-        lastValidValue = newValue // Update the last valid value
-    }
-    // Update the input value with the validated and manipulated value
-    income.value = newValue
 }
 </script>
 
