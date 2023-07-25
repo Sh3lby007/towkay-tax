@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, toRef } from 'vue'
+import { ref, watch, onMounted, toRef } from 'vue'
 
 interface Bracket {
     income2: string
@@ -188,12 +188,9 @@ function isActiveBracket(bracket: Bracket) {
 
 function parseIncome(str: string) {
     // Remove all non-digit characters
-    let cleaned = str.replace(/\D/g, '')
+    const cleaned = str.replace(/\D/g, '')
 
-    // Convert to number
-    let income = Number(cleaned)
-
-    return income
+    return Number(cleaned)
 }
 </script>
 
