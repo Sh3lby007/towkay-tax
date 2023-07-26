@@ -15,6 +15,7 @@
 
         <div class="mb-6 flex">
             <input
+                autocomplete="off"
                 type="tel"
                 ref="inputRef"
                 v-model="income"
