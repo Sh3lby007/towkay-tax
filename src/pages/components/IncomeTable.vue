@@ -38,20 +38,22 @@
             Calculate Tax
         </button>
 
-        <div v-if="isCalculated" class="mt-4">
-            <div class="flex">
-                <h1 class="text-lg font-medium mb-2 mr-3">Taxable Income:</h1>
-                <h1 class="text-xl font-bold">${{ taxableIncome.toFixed(2) }}</h1>
-            </div>
-            <div class="flex">
-                <h1 class="text-lg font-medium mb-2 mr-3">CPF Deduction (20%) :</h1>
-                <h1 class="text-xl font-bold">${{ cpfDeduction.toFixed(2) }}</h1>
-            </div>
-            <div class="flex">
-                <h1 class="text-lg font-medium mb-2 mr-3">Tax Amount:</h1>
-                <h1 class="text-xl font-bold">${{ taxAmount.toFixed(2) }}</h1>
-            </div>
-        </div>
+        <table v-if="isCalculated" class="mt-4 w-full">
+            <tbody class="text-lg font-medium mb-2 mr-3">
+                <tr>
+                    <td class="w-1/2">Taxable Income:</td>
+                    <td class="text-xl font-bold">${{ taxableIncome.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/2">CPF Deduction (20%) :</td>
+                    <td class="text-xl font-bold">${{ cpfDeduction.toFixed(2) }}</td>
+                </tr>
+                <tr>
+                    <td class="w-1/2">Tax Amount: :</td>
+                    <td class="text-xl font-bold">${{ taxAmount.toFixed(2) }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
