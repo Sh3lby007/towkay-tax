@@ -49,7 +49,7 @@
                     <td class="text-xl font-bold">${{ cpfDeduction.toFixed(2) }}</td>
                 </tr>
                 <tr>
-                    <td class="w-1/2">Tax Amount: :</td>
+                    <td class="w-1/2">Tax Amount:</td>
                     <td class="text-xl font-bold">${{ taxAmount.toFixed(2) }}</td>
                 </tr>
             </tbody>
