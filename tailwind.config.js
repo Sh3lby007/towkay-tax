@@ -3,7 +3,9 @@
 module.exports = {
     content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
     theme: {
-        animation: { typing: ' typing 1.5s steps(37)' },
+        animation: {
+            typing: ' typing 1.5s steps(37)'
+        },
         keyframes: {
             typing: {
                 '0%': {
